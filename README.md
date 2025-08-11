@@ -1,5 +1,7 @@
 # A template to start a fullstack AI project asap
 
+I will make a better README for this soon to describe this.
+
 ## Frontend
 
 ### Setup
