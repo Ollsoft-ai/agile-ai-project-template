@@ -1,18 +1,23 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.routers import upload
 
+# Only use /api root_path in production
+root_path = "/api" if os.getenv("ENVIRONMENT") == "production" else ""
+
 app = FastAPI(
-    title="ClearPath Trade AI Platform",
-    description="AI-powered trade compliance platform",
-    version="0.1.0"
+    title="Ollsoft Backend",
+    description="Ollsoft Backend",
+    version="0.1.0",
+    root_path=root_path
 )
 
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Frontend URL
+    allow_origins=["*"],  # Frontend URL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -23,7 +28,7 @@ app.include_router(upload.router)
 
 @app.get("/")
 async def read_root():
-    return {"message": "ClearPath Trade AI Platform API"}
+    return {"message": "Ollsoft Backend API"}
 
 @app.get("/health")
 async def health_check():

@@ -1,13 +1,10 @@
-FROM node:20-alpine AS base
+FROM node:22-alpine AS base
 
 WORKDIR /usr/src/app
 
+# install deps only; code will be bind-mounted
 COPY package*.json ./
-
-RUN npm install
-
-COPY . .
+RUN npm ci
 
 EXPOSE 5173
-
 CMD ["npm", "run", "dev"] 

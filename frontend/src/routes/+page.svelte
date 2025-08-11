@@ -1,26 +1,39 @@
 <script lang="ts">
-	console.log("Hello");
+	import { setLocale } from '$lib/paraglide/runtime';
+	import { page } from '$app/state';
+	import { goto } from '$app/navigation';
+	import { m } from '$lib/paraglide/messages.js';
 </script>
 
-<div class="min-h-screen h-screen bg-slate-100 text-slate-800 flex flex-col p-6 font-sans">
-	<header class="mb-4">
-		<h1 class="text-4xl font-bold text-slate-700">Test</h1>
-	</header>
-	
-	<h1>Hi iii</h1>
+<main class="min-h-[100svh] flex items-center justify-center bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+	<section class="w-full max-w-xl rounded-2xl border border-gray-200 dark:border-gray-800 bg-white/70 dark:bg-gray-950/60 backdrop-blur p-8 shadow-sm">
+		<h1 class="text-3xl font-semibold tracking-tight">{m.hello_world({ name: 'SvelteKit User' })}d</h1>
 
-	<footer class="flex-none mt-4 text-center">
-		<a
-			href="https://ollsoft.ai"
-			target="_blank"
-			rel="noopener noreferrer"
-			class="text-sm text-slate-500 hover:text-blue-600 hover:underline transition duration-150"
-		>
-			Ollsoft.ai
-		</a>
-	</footer>
-</div>
+		<div class="mt-6 flex items-center gap-3">
+			<button
+				class="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/70 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-950"
+				on:click={() => setLocale('en')}
+			>
+				English
+			</button>
+			<button
+				class="inline-flex items-center rounded-lg bg-slate-200 px-4 py-2 text-sm font-medium text-slate-900 hover:bg-slate-300 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-950"
+				on:click={() => setLocale('de')}
+			>
+				Deutsch
+			</button>
+		</div>
 
-<style lang="postcss">
-	
-</style>
+		<p class="mt-6 text-sm text-gray-600 dark:text-gray-400">
+			If you use VSCode, install the
+			<a
+				class="font-medium text-blue-700 underline underline-offset-4 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+				href="https://marketplace.visualstudio.com/items?itemName=inlang.vs-code-extension"
+				target="_blank"
+			>
+				Sherlock i18n extension
+			</a>
+			for a better i18n experience.
+		</p>
+	</section>
+</main>
