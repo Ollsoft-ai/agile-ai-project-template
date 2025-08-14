@@ -2,10 +2,10 @@
 [x] - Fastapi
 [x] - Postgresql
 [x] - SQLModel
-[] - Alembic for migrations (+ document)
-[] - Redis caching with latest async redis
 [] - FastAPI Users for authentication with roles as well
 [] - svelte login
+[] - Alembic for migrations (+ document)
+[] - Redis caching with latest async redis
 [] - celery (with postgresql integrated)
 [] - openapi-typescript so we dont have duplicate pydantic and svelte typings
 [] - setup MCP server for AI frontent developer (playwright?)

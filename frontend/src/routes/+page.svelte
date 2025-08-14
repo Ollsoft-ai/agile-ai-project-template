@@ -3,6 +3,7 @@
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 	import { m } from '$lib/paraglide/messages.js';
+	import { isLoggedIn, user } from '$lib/stores/auth';
 </script>
 
 <main class="min-h-[100svh] flex items-center justify-center bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
@@ -22,6 +23,39 @@
 			>
 				Deutsch
 			</button>
+		</div>
+
+		<!-- Authentication Section -->
+		<div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
+			{#if $isLoggedIn}
+				<div class="text-center">
+					<p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+						Welcome back, {$user?.name || $user?.email || 'User'}!
+					</p>
+					<div class="flex gap-3 justify-center">
+						<button
+							class="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/70 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-950"
+							on:click={() => goto('/dashboard')}
+						>
+							Go to Dashboard
+						</button>
+					</div>
+				</div>
+			{:else}
+				<div class="text-center">
+					<p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+						Get started by signing in to your account
+					</p>
+					<div class="flex gap-3 justify-center">
+						<button
+							class="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/70 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-950"
+							on:click={() => goto('/auth')}
+						>
+							Sign In / Sign Up
+						</button>
+					</div>
+				</div>
+			{/if}
 		</div>
 
 		<p class="mt-6 text-sm text-gray-600 dark:text-gray-400">
