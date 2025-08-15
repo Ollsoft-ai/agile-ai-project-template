@@ -4,8 +4,7 @@ from typing import Generator
 
 # Database URL configuration
 DATABASE_URL = os.getenv(
-    "DATABASE_URL", 
-    "postgresql://ollsoft:0lls0ft231!@localhost:5432/app_db"
+    "DATABASE_URL"
 )
 
 # Create engine with appropriate settings
