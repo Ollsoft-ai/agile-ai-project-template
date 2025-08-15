@@ -19,3 +19,9 @@ When installing new dependencies, always use the "-D" tag!
 ```
 npm install -D @neco
 ```
+
+
+### random notes
+
+Zitadel master key is in the docker compose
+uRESTervArthaRCUbUrNArYSIdeBOSiC
