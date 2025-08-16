@@ -37,18 +37,20 @@ services:
     environment:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
-      - DATABASE_URL=postgresql://ollsoft:0lls0ft231!@postgres:5432/app_db
+      - ENVIRONMENT=development
+      - DATABASE_URL=postgresql://ollsoft:rOwFLeyVeAteLardstuRsFuLARyPEnte@postgres:5432/app_db
     volumes:
       - ./backend:/app
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
 
   # PostgreSQL Database
   postgres:
     image: postgres:17-alpine
     environment:
       - POSTGRES_USER=ollsoft
-      - POSTGRES_PASSWORD=0lls0ft231!
+      - POSTGRES_PASSWORD=rOwFLeyVeAteLardstuRsFuLARyPEnte
       - POSTGRES_DB=app_db
     ports:
       - "5432:5432"
@@ -56,7 +58,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ollsoft"]
-      interval: 30s
+      interval: 5s
       timeout: 5s
       retries: 3
 

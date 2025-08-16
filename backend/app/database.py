@@ -1,20 +1,18 @@
 import os
 from sqlmodel import SQLModel, create_engine, Session
 from typing import Generator
+from app.config import get_settings
 
-# Database URL configuration
-DATABASE_URL = os.getenv(
-    "DATABASE_URL"
-)
+settings = get_settings()
 
 # Create engine with appropriate settings
 def get_engine(database_url: str = None):
     """Create database engine with proper configuration"""
-    url = database_url or DATABASE_URL
+    url = database_url or settings.database_url
     
     # Engine configuration
     engine_kwargs = {
-        "echo": os.getenv("ENVIRONMENT") == "development",  # SQL logging in dev
+        "echo": settings.environment == "development",  # SQL logging in dev
         "pool_pre_ping": True,  # Verify connections before use
         "pool_recycle": 300,    # Recycle connections every 5 minutes
     }

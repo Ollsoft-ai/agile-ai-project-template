@@ -5,9 +5,12 @@ from contextlib import asynccontextmanager
 
 from app.database import create_db_and_tables
 from app.routers import upload, authors
+from app.config import get_settings
+
+settings = get_settings()
 
 # Only use /api root_path in production
-root_path = "/api" if os.getenv("ENVIRONMENT") == "production" else ""
+root_path = "/api" if settings.environment == "production" else ""
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -19,7 +22,7 @@ async def lifespan(app: FastAPI):
     pass
 
 app = FastAPI(
-    title="Agile AI Backend",
+    title=settings.app_name,
     description="Modern FastAPI backend with SQLModel, PostgreSQL, and Alembic",
     version="0.1.0",
     root_path=root_path,
@@ -29,7 +32,7 @@ app = FastAPI(
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Frontend URL
+    allow_origins=settings.cors_allow_origins,  # Frontend URL(s)
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

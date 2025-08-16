@@ -50,7 +50,7 @@ services:
       dockerfile: Dockerfile.prod
     environment:
       - ENVIRONMENT=production
-      - DATABASE_URL=postgresql://ollsoft:0lls0ft231!@postgres:5432/app_db
+      - DATABASE_URL=postgresql://ollsoft:rOwFLeyVeAteLardstuRsFuLARyPEnte@postgres:5432/app_db
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8000/health"]
       interval: 30s
@@ -64,7 +64,7 @@ services:
     image: postgres:17-alpine
     environment:
       - POSTGRES_USER=ollsoft
-      - POSTGRES_PASSWORD=0lls0ft231!
+      - POSTGRES_PASSWORD=rOwFLeyVeAteLardstuRsFuLARyPEnte
       - POSTGRES_DB=app_db
     volumes:
       - postgres_data:/var/lib/postgresql/data

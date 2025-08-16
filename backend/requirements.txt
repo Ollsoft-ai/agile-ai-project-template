@@ -1,6 +1,7 @@
 # FastAPI and core dependencies
 fastapi[standard]==0.115.14
 pydantic==2.11.7
+pydantic-settings==2.6.1
 uvicorn[standard]==0.35.0
 python-multipart==0.0.20
 python-dotenv==1.1.1
@@ -13,3 +14,10 @@ psycopg2-binary==2.9.10
 
 # Redis and caching
 redis==6.4.0
+
+# Authentication
+authlib==1.6.1
+httpx==0.28.1
+python-jose[cryptography]==3.5.0
+starlette==0.46.0
+itsdangerous

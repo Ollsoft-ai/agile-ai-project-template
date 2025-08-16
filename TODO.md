@@ -11,6 +11,7 @@
 [] - setup MCP server for AI frontent developer (playwright?)
 [] - CI/CD setup for best deployment with bluegreen deployments and github actions test
 [] - rate limiting + other security features
+[] - make postgres password and user a .env var
 [] - add health check to fastapi and ensure frontend loads once backend healthy
 [] - graphana, prometheus, loki, opentelemetry + celery flower
 [] - unit tests  
