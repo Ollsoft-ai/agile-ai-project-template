@@ -1,0 +1,27 @@
+# blueprints/fastapi-swagger.yaml
+version: 1
+metadata:
+  name: FastAPI Swagger OIDC
+entries:
+  - id: fastapi_swagger_provider
+    model: authentik_providers_oauth2.oauth2provider
+    identifiers:
+      name: fastapi-swagger-oidc
+    attrs:
+      issuer_mode: per_provider
+      client_type: public            # <-- public so Swagger (browser) can use PKCE without a secret
+      authentication_flow: !Find [authentik_flows.flow, [slug, default-authentication-flow]]
+      authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-explicit-consent]]
+      invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+      redirect_uris:
+        - http://localhost:8000/docs/oauth2-redirect
+        - http://localhost:8000/redoc/oauth2-redirect   # optional, if you use ReDoc
+      property_mappings: []  # optional; keep defaults
+      # scopes are managed on the Provider; ensure openid/email/profile/groups are enabled if you need them
+
+  - model: authentik_core.application
+    identifiers:
+      slug: fastapi-swagger
+    attrs:
+      name: fastapi-swagger
+      provider: !KeyOf fastapi_swagger_provider

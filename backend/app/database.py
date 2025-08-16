@@ -2,15 +2,12 @@ import os
 from sqlmodel import SQLModel, create_engine, Session
 from typing import Generator
 
-# Database URL configuration
-DATABASE_URL = os.getenv(
-    "DATABASE_URL"
-)
+from app.settings import settings
 
 # Create engine with appropriate settings
 def get_engine(database_url: str = None):
     """Create database engine with proper configuration"""
-    url = database_url or DATABASE_URL
+    url = database_url or settings.DATABASE_URL
     
     # Engine configuration
     engine_kwargs = {

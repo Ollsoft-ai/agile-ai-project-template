@@ -1,5 +1,3 @@
-# Removed obsolete version attribute
-
 services:
   # Static website
   static_site:
@@ -37,29 +35,108 @@ services:
     environment:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
-      - DATABASE_URL=postgresql://ollsoft:0lls0ft231!@postgres:5432/app_db
+      - DATABASE_URL=postgresql://ollsoft:rOwFLeyVeAteLardstuRsFuLARyPEnte@postgres:5432/app_db
+      - AUTHENTIK_ISSUER=http://localhost:9000/application/o/fastapi-demo/
+      - OIDC_CLIENT_ID=fastapi-client
+      - OIDC_CLIENT_SECRET=${OIDC_CLIENT_SECRET:?secret key required}
+      - APP_BASE_URL=http://localhost:8000
+      - SESSION_SECRET=${SESSION_SECRET:?secret key required}
     volumes:
       - ./backend:/app
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+
+  # Redis (shared service)
+  redis:
+    image: docker.io/library/redis:alpine
+    command: --save 60 1 --loglevel warning
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      start_period: 20s
+      interval: 30s
+      retries: 5
+      timeout: 3s
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
 
   # PostgreSQL Database
   postgres:
     image: postgres:17-alpine
     environment:
       - POSTGRES_USER=ollsoft
-      - POSTGRES_PASSWORD=0lls0ft231!
-      - POSTGRES_DB=app_db
+      - POSTGRES_PASSWORD=rOwFLeyVeAteLardstuRsFuLARyPEnte
+      - POSTGRES_MULTIPLE_DATABASES=app_db,authentik
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./postgres-init:/docker-entrypoint-initdb.d
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ollsoft"]
-      interval: 30s
+      test: ["CMD-SHELL", "pg_isready -U ollsoft -d app_db"]
+      interval: 5s
       timeout: 5s
       retries: 3
+
+  # Authentik Server
+  authentik_server:
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2025.6.4}
+    command: server
+    environment:
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
+      AUTHENTIK_REDIS__HOST: redis
+      AUTHENTIK_POSTGRESQL__HOST: postgres
+      AUTHENTIK_POSTGRESQL__USER: ${AUTHENTIK_PG_USER:-ollsoft}
+      AUTHENTIK_POSTGRESQL__NAME: ${AUTHENTIK_PG_DB:-authentik}
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${AUTHENTIK_PG_PASS:-rOwFLeyVeAteLardstuRsFuLARyPEnte}
+    volumes:
+      - ./authentik/media:/media
+      - ./authentik/custom-templates:/templates
+    env_file:
+      - .env
+    ports:
+      - "${COMPOSE_PORT_HTTP:-9000}:9000"
+      - "${COMPOSE_PORT_HTTPS:-9443}:9443"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # Authentik Worker
+  authentik_worker:
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2025.6.4}
+    command: worker
+    environment:
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
+      AUTHENTIK_REDIS__HOST: redis
+      AUTHENTIK_POSTGRESQL__HOST: postgres
+      AUTHENTIK_POSTGRESQL__USER: ${AUTHENTIK_PG_USER:-ollsoft}
+      AUTHENTIK_POSTGRESQL__NAME: ${AUTHENTIK_PG_DB:-authentik}
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${AUTHENTIK_PG_PASS:-rOwFLeyVeAteLardstuRsFuLARyPEnte}
+    # `user: root` and the docker socket volume are optional.
+    # See more for the docker socket integration here:
+    # https://goauthentik.io/docs/outposts/integrations/docker
+    # Removing `user: root` also prevents the worker from fixing the permissions
+    # on the mounted folders, so when removing this make sure the folders have the correct UID/GID
+    # (1000:1000 by default)
+    user: root
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./authentik/media:/media
+      - ./authentik/certs:/certs
+      - ./authentik/custom-templates:/templates
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
 volumes:
   node_modules:
   postgres_data:
+  redis_data:

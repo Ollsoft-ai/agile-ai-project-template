@@ -1,0 +1,26 @@
+# yaml-language-server: $schema=https://goauthentik.io/blueprints/schema.json
+version: 1
+metadata:
+  name: My FastAPI App
+entries:
+  # Create OAuth2/OIDC provider
+  - id: prov
+    model: authentik_providers_oauth2.oauth2provider
+    identifiers:
+      name: my-fastapi OIDC
+    attrs:
+      client_type: confidential
+      authentication_flow: !Find [authentik_flows.flow, [slug, default-authentication-flow]]
+      authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-explicit-consent]]
+      invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+      # strict allow-list of redirect URIs (recommended)
+      redirect_uris:
+        - https://api.example.com/auth/callback
+
+  # Create Application and attach provider
+  - model: authentik_core.application
+    identifiers:
+      slug: my-fastapi
+    attrs:
+      name: my-fastapi
+      provider: !KeyOf prov
